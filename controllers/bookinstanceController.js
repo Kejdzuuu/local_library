@@ -1,6 +1,9 @@
 var BookInstance = require("../models/bookinstance");
+var Book = require("../models/book");
 
-exports.bookinstance_list = function (req, res, next) {
+const { body, validationResult } = require("express-validator");
+
+exports.book_instance_list = function (req, res, next) {
   BookInstance.find()
     .populate("book")
     .exec(function (err, list_book_instances) {
@@ -14,7 +17,7 @@ exports.bookinstance_list = function (req, res, next) {
     });
 };
 
-exports.bookinstance_detail = function (req, res, next) {
+exports.book_instance_detail = function (req, res, next) {
   BookInstance.findById(req.params.id)
     .populate("book")
     .exec(function (err, book_instance) {
@@ -33,26 +36,76 @@ exports.bookinstance_detail = function (req, res, next) {
     });
 };
 
-exports.bookinstance_create_get = function (req, res) {
-  res.send("NOT IMPLEMENTED: BookInstance create GET");
+exports.book_instance_create_get = function (req, res, next) {
+  Book.find({}, "title").exec(function (err, books) {
+    if (err) {
+      return next(err);
+    }
+    res.render("book_instance_form", {
+      title: "Create Book Instance",
+      book_list: books,
+    });
+  });
 };
 
-exports.bookinstance_create_post = function (req, res) {
-  res.send("NOT IMPLEMENTED: BookInstance create POST");
-};
+exports.book_instance_create_post = [
+  body("book", "Book must be specified").trim().isLength({ min: 1 }).escape(),
+  body("imprint", "Imprint must be specified")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("status").escape(),
+  body("due_back", "Invalid date")
+    .optional({ checkFalse: true })
+    .isISO8601()
+    .toDate(),
+  (req, res, next) => {
+    const errors = validationResult(req);
 
-exports.bookinstance_delete_get = function (req, res) {
+    var book_instance = new BookInstance({
+      book: req.body.book,
+      imprint: req.body.imprint,
+      status: req.body.status,
+      due_back: req.body.due_back,
+    });
+
+    if (!errors.isEmpty()) {
+      Book.find({}, "title").exec(function (err, books) {
+        if (err) {
+          return next(err);
+        }
+        res.render("book_instance_form", {
+          title: "Create Book Instance",
+          book_list: books,
+          selected_book: book_instance.book._id,
+          errors: errors.array(),
+          book_instance: book_instance,
+        });
+      });
+      return;
+    } else {
+      book_instance.save(function (err) {
+        if (err) {
+          return next(err);
+        }
+        res.redirect(book_instance.url);
+      });
+    }
+  },
+];
+
+exports.book_instance_delete_get = function (req, res, next) {
   res.send("NOT IMPLEMENTED: BookInstance delete GET");
 };
 
-exports.bookinstance_delete_post = function (req, res) {
+exports.book_instance_delete_post = function (req, res, next) {
   res.send("NOT IMPLEMENTED: BookInstance delete POST");
 };
 
-exports.bookinstance_update_get = function (req, res) {
+exports.book_instance_update_get = function (req, res, next) {
   res.send("NOT IMPLEMENTED: BookInstance update GET");
 };
 
-exports.bookinstance_update_post = function (req, res) {
+exports.book_instance_update_post = function (req, res, next) {
   res.send("NOT IMPLEMENTED: BookInstance update POST");
 };

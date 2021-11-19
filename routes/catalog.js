@@ -62,36 +62,36 @@ router.get("/genres", genre_controller.genre_list);
 /// BOOKINSTANCE ROUTES ///
 router.get(
   "/bookinstance/create",
-  book_instance_controller.bookinstance_create_get
+  book_instance_controller.book_instance_create_get
 );
 
 router.post(
   "/bookinstance/create",
-  book_instance_controller.bookinstance_create_post
+  book_instance_controller.book_instance_create_post
 );
 
 router.get(
   "/bookinstance/:id/delete",
-  book_instance_controller.bookinstance_delete_get
+  book_instance_controller.book_instance_delete_get
 );
 
 router.post(
   "/bookinstance/:id/delete",
-  book_instance_controller.bookinstance_delete_post
+  book_instance_controller.book_instance_delete_post
 );
 
 router.get(
   "/bookinstance/:id/update",
-  book_instance_controller.bookinstance_update_get
+  book_instance_controller.book_instance_update_get
 );
 
 router.post(
   "/bookinstance/:id/update",
-  book_instance_controller.bookinstance_update_post
+  book_instance_controller.book_instance_update_post
 );
 
-router.get("/bookinstance/:id", book_instance_controller.bookinstance_detail);
+router.get("/bookinstance/:id", book_instance_controller.book_instance_detail);
 
-router.get("/bookinstances", book_instance_controller.bookinstance_list);
+router.get("/bookinstances", book_instance_controller.book_instance_list);
 
 module.exports = router;
