@@ -10,7 +10,7 @@ block content
         - book_list.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA > textB) ? 1 : 0;});
         for book in book_list 
           if book_instance 
-            option(value=book._id selected=(book_instance.book.toString()==book._id.toString() ? 'selected' : false)) #{book.title} 
+            option(value=book._id selected=(book_instance.book._id.toString()==book._id) ? 'selected' : false) #{book.title}
           else 
             option(value=book._id) #{book.title} 
 
@@ -20,7 +20,7 @@ block content
 
     div.form-group 
       label(for='due_back') Date when available: 
-      input#due_back.form-control(type='date' name='due_back' value=(book_instance===undefined ? '' : book_instance.due_back))
+      input#due_back.form-control(type='date' name='due_back' value=(book_instance===undefined ? '' : book_instance.due_back_input))
 
     div.form-group 
       label(for='status') Status:
